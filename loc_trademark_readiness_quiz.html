@@ -1,0 +1,251 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.quiz-wrap{max-width:620px;margin:0 auto;padding:2rem 1rem}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:2rem}
+.progress-fill{height:100%;background:var(--border-accent);border-radius:2px;transition:width 0.4s ease}
+.step{display:none}.step.active{display:block}
+.q-label{font-size:12px;font-weight:500;color:var(--text-accent);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.5rem}
+.q-text{font-size:20px;font-weight:500;color:var(--text-primary);line-height:1.4;margin-bottom:0.5rem}
+.q-hint{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:0.5px solid var(--border-strong);border-radius:var(--radius);cursor:pointer;transition:border-color 0.15s,background 0.15s;background:var(--surface-2)}
+.opt:hover{border-color:var(--border-accent);background:var(--bg-accent)}
+.opt.selected{border-color:var(--border-accent);background:var(--bg-accent)}
+.opt-icon{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-stronger);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background 0.15s,border-color 0.15s}
+.opt.selected .opt-icon{background:var(--fill-accent);border-color:var(--fill-accent)}
+.opt.selected .opt-icon::after{content:'';width:6px;height:6px;border-radius:50%;background:white}
+.opt-label{font-size:15px;color:var(--text-primary);line-height:1.4}
+.opt-sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.btn-back{font-size:14px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:0}
+.btn-back:hover{color:var(--text-primary)}
+.btn-next{padding:10px 24px;border-radius:var(--radius);background:var(--fill-accent);color:white;border:none;font-size:15px;font-weight:500;cursor:pointer;opacity:0.4;pointer-events:none;transition:opacity 0.15s}
+.btn-next.ready{opacity:1;pointer-events:all}
+.result-wrap{text-align:center;padding:1rem 0}
+.result-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
+.result-icon.green{background:var(--bg-success)}
+.result-icon.amber{background:var(--bg-warning)}
+.result-title{font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:0.75rem}
+.result-body{font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:2rem;text-align:left;background:var(--surface-1);border-radius:12px;padding:1.25rem 1.5rem;border:0.5px solid var(--border)}
+.ctas{display:flex;flex-direction:column;gap:10px}
+.cta-primary{display:block;padding:14px 24px;border-radius:var(--radius);background:var(--fill-accent);color:white;text-align:center;font-size:15px;font-weight:500;text-decoration:none;border:none;cursor:pointer}
+.cta-primary:hover{opacity:0.9}
+.cta-secondary{display:block;padding:14px 24px;border-radius:var(--radius);background:var(--surface-2);color:var(--text-primary);text-align:center;font-size:15px;border:0.5px solid var(--border-strong);text-decoration:none;cursor:pointer}
+.cta-secondary:hover{background:var(--surface-1)}
+.flags{display:flex;flex-direction:column;gap:6px;margin-bottom:1.5rem}
+.flag{font-size:13px;color:var(--text-secondary);padding:8px 12px;background:var(--surface-1);border-radius:var(--radius);border-left:3px solid var(--border-accent);text-align:left}
+.flag.warn{border-left-color:#EF9F27}
+.step-counter{font-size:13px;color:var(--text-muted)}
+</style>
+
+<div class="quiz-wrap">
+  <h2 class="sr-only">Trademark readiness quiz — find out if you're ready to file or need to talk first</h2>
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div class="step active" id="s1">
+    <div class="q-label">Question 1 of 5</div>
+    <div class="q-text">What are you looking to trademark?</div>
+    <div class="q-hint">This affects how we classify your filing and what clearance search we run.</div>
+    <div class="options">
+      <div class="opt" data-val="name" onclick="pick(this,'s1')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Business or brand name</div><div class="opt-sub">e.g. "Acme Co." or "Zesty"</div></div>
+      </div>
+      <div class="opt" data-val="logo" onclick="pick(this,'s1')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Logo or design mark</div><div class="opt-sub">Visual symbol, stylized lettering, or icon</div></div>
+      </div>
+      <div class="opt" data-val="slogan" onclick="pick(this,'s1')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Slogan or tagline</div><div class="opt-sub">e.g. "Just Do It"</div></div>
+      </div>
+      <div class="opt" data-val="multi" onclick="pick(this,'s1')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">More than one of the above</div></div>
+      </div>
+    </div>
+    <div class="nav"><span></span><button class="btn-next" id="next1" onclick="go(2)">Next</button></div>
+  </div>
+
+  <div class="step" id="s2">
+    <div class="q-label">Question 2 of 5</div>
+    <div class="q-text">Are you already using this mark in your business?</div>
+    <div class="q-hint">The USPTO cares whether your mark is "in commerce" — this determines your filing type.</div>
+    <div class="options">
+      <div class="opt" data-val="yes_active" onclick="pick(this,'s2')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Yes — it's on my website, products, or marketing</div></div>
+      </div>
+      <div class="opt" data-val="yes_soft" onclick="pick(this,'s2')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Sort of — I've used it but not consistently</div></div>
+      </div>
+      <div class="opt" data-val="no_soon" onclick="pick(this,'s2')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Not yet — I'm planning to launch soon</div><div class="opt-sub">We can file on "intent to use"</div></div>
+      </div>
+      <div class="opt" data-val="no_idea" onclick="pick(this,'s2')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">I'm not sure what counts</div></div>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-back" onclick="go(1)">← Back</button><button class="btn-next" id="next2" onclick="go(3)">Next</button></div>
+  </div>
+
+  <div class="step" id="s3">
+    <div class="q-label">Question 3 of 5</div>
+    <div class="q-text">Have you searched to see if anyone else is using a similar mark?</div>
+    <div class="q-hint">A name can be in use without being registered. Both kinds of prior use can block your application.</div>
+    <div class="options">
+      <div class="opt" data-val="full" onclick="pick(this,'s3')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Yes — I searched the USPTO database and Google</div></div>
+      </div>
+      <div class="opt" data-val="basic" onclick="pick(this,'s3')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Partially — I Googled it but didn't check USPTO</div></div>
+      </div>
+      <div class="opt" data-val="none" onclick="pick(this,'s3')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">No — I haven't searched yet</div></div>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-back" onclick="go(2)">← Back</button><button class="btn-next" id="next3" onclick="go(4)">Next</button></div>
+  </div>
+
+  <div class="step" id="s4">
+    <div class="q-label">Question 4 of 5</div>
+    <div class="q-text">How distinctive is your mark?</div>
+    <div class="q-hint">Generic or purely descriptive marks are harder (sometimes impossible) to register. Invented or unique marks have the strongest protection.</div>
+    <div class="options">
+      <div class="opt" data-val="invented" onclick="pick(this,'s4')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">It's invented or unique — not a real word</div><div class="opt-sub">e.g. Xerox, Kodak, Spotify</div></div>
+      </div>
+      <div class="opt" data-val="suggestive" onclick="pick(this,'s4')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">It hints at what I do without describing it directly</div><div class="opt-sub">e.g. Netflix, Amazon</div></div>
+      </div>
+      <div class="opt" data-val="descriptive" onclick="pick(this,'s4')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">It describes my product or service fairly directly</div><div class="opt-sub">e.g. "Fast Delivery Co."</div></div>
+      </div>
+      <div class="opt" data-val="unsure" onclick="pick(this,'s4')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Not sure where it falls</div></div>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-back" onclick="go(3)">← Back</button><button class="btn-next" id="next4" onclick="go(5)">Next</button></div>
+  </div>
+
+  <div class="step" id="s5">
+    <div class="q-label">Question 5 of 5</div>
+    <div class="q-text">What's driving you to file right now?</div>
+    <div class="q-hint">Timing can affect which filing strategy makes the most sense.</div>
+    <div class="options">
+      <div class="opt" data-val="competitor" onclick="pick(this,'s5')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">A competitor is using something similar</div></div>
+      </div>
+      <div class="opt" data-val="launch" onclick="pick(this,'s5')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">I'm about to launch or have recently launched</div></div>
+      </div>
+      <div class="opt" data-val="protect" onclick="pick(this,'s5')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">I want to lock it down before someone else does</div></div>
+      </div>
+      <div class="opt" data-val="investor" onclick="pick(this,'s5')">
+        <div class="opt-icon"></div>
+        <div><div class="opt-label">Investors or partners are asking for it</div></div>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-back" onclick="go(4)">← Back</button><button class="btn-next" id="next5" onclick="showResult()">See my result</button></div>
+  </div>
+
+  <div class="step" id="result"></div>
+</div>
+
+<script>
+const answers = {};
+const steps = 5;
+
+function pick(el, step) {
+  document.querySelectorAll('#'+step+' .opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[step] = el.dataset.val;
+  const nextBtn = document.getElementById('next' + step.replace('s',''));
+  if (nextBtn) nextBtn.classList.add('ready');
+}
+
+function go(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(n < 6 ? 's'+n : 'result').classList.add('active');
+  const pct = Math.round(((n-1)/steps)*100);
+  document.getElementById('progress').style.width = pct + '%';
+  window.scrollTo(0,0);
+}
+
+function showResult() {
+  const flags = [];
+  let recommend = 'file';
+
+  const s2 = answers['s2'];
+  const s3 = answers['s3'];
+  const s4 = answers['s4'];
+  const s5 = answers['s5'];
+
+  if (s3 === 'none') { flags.push({t:'warn', msg:'You haven\'t searched the USPTO yet. Our attorneys run a full clearance search before filing — this is included in your $599.'}); }
+  if (s3 === 'basic') { flags.push({t:'info', msg:'A Google search is a start, but not enough. USPTO has thousands of marks that don\'t show up online. We handle the full search.'}); }
+  if (s4 === 'descriptive') { flags.push({t:'warn', msg:'Descriptive marks can be harder to register. An attorney review before filing could save you the USPTO fee if there\'s a problem.'}); recommend = 'call'; }
+  if (s4 === 'unsure') { flags.push({t:'info', msg:'Not sure how distinctive your mark is? That\'s exactly what our attorneys evaluate during the clearance search.'}); }
+  if (s2 === 'no_idea') { flags.push({t:'info', msg:'Whether you\'re using the mark in commerce affects your filing type. Our team will walk you through this.'}); recommend = 'call'; }
+  if (s5 === 'competitor') { flags.push({t:'warn', msg:'If a competitor is already using something similar, timing matters. An attorney can help you assess your options quickly.'}); recommend = 'call'; }
+
+  const isReady = recommend === 'file';
+
+  let flagsHtml = '';
+  flags.forEach(f => {
+    flagsHtml += `<div class="flag ${f.t === 'warn' ? 'warn' : ''}">${f.msg}</div>`;
+  });
+
+  const readyResult = `
+    <div class="result-wrap">
+      <div class="result-icon green"><i class="ti ti-check" style="font-size:26px;color:var(--text-success)" aria-hidden="true"></i></div>
+      <div class="result-title">You look ready to file</div>
+      <div class="result-body">
+        <p>Based on your answers, you're in a solid position to move forward with a trademark application. Here's what happens next when you file with Law on Call:</p>
+        <br>
+        <p>Our attorneys run a full clearance search before touching the application — checking the USPTO database, state records, and common-law use. If we spot a potential conflict, we'll flag it before you spend anything on filing fees. Once you're clear, we handle the application, track all USPTO deadlines, and manage any correspondence that comes back.</p>
+        <br>
+        <p>The full service is $599 — that includes the USPTO filing fee for one class. No upsells, no surprises.</p>
+      </div>
+      ${flagsHtml ? `<div class="flags">${flagsHtml}</div>` : ''}
+      <div class="ctas">
+        <a class="cta-primary" href="https://www.lawoncall.com/order-trademark-service">Register my trademark — $599</a>
+        <a class="cta-secondary" href="tel:6027676161">Talk to an attorney first — (602) 767-6161</a>
+      </div>
+    </div>`;
+
+  const callResult = `
+    <div class="result-wrap">
+      <div class="result-icon amber"><i class="ti ti-phone" style="font-size:22px;color:var(--text-warning)" aria-hidden="true"></i></div>
+      <div class="result-title">A quick call would help first</div>
+      <div class="result-body">
+        <p>Your situation has a couple of nuances that are worth a short attorney conversation before filing. This isn't a red light — it just means a quick review upfront could save you time and filing fees down the road.</p>
+        <br>
+        <p>Law on Call's attorneys are available now and can typically answer your questions in one call. There's no charge to talk — and if you're ready to file after, we'll take it from there for $599 total, USPTO fee included.</p>
+      </div>
+      ${flagsHtml ? `<div class="flags">${flagsHtml}</div>` : ''}
+      <div class="ctas">
+        <a class="cta-primary" href="tel:6027676161">Call now — (602) 767-6161</a>
+        <a class="cta-secondary" href="https://www.lawoncall.com/order-trademark-service">I'm ready to file anyway</a>
+      </div>
+    </div>`;
+
+  document.getElementById('result').innerHTML = isReady ? readyResult : callResult;
+  document.getElementById('progress').style.width = '100%';
+  go(6);
+}
+</script>
